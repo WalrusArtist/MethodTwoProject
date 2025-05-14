@@ -44,7 +44,7 @@
     if (blockedUntil && now < parseInt(blockedUntil)) {
       document.body.innerHTML = "<h2>Access denied</h2><p> Please return back to the survey page!</p>";
     } else {
-      let secondsLeft = 5;
+      let secondsLeft = 120;
       const timerElement = document.getElementById('timer');
       const contentElement = document.getElementById('content');
 
