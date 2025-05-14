@@ -29,11 +29,12 @@
 <body>
 
   <h1>Timed Section</h1>
-  <img src="https://via.placeholder.com/600x200?text=Your+Image+Here" alt="Header Image" />
   <div id="timer">02:00</div>
   <div id="content">
     <p>This is your timed content. You have 2 minutes to read or interact with this section.</p>
   </div>
+  <img src="arial.png" alt="Header Image" />
+
 
   <script>
     // Check if user is blocked
@@ -41,9 +42,9 @@
     const now = new Date().getTime();
 
     if (blockedUntil && now < parseInt(blockedUntil)) {
-      document.body.innerHTML = "<h2>Access denied</h2><p>You must wait before accessing this page again.</p>";
+      document.body.innerHTML = "<h2>Access denied</h2><p> Please return back to the survey page!</p>";
     } else {
-      let secondsLeft = 120;
+      let secondsLeft = 5;
       const timerElement = document.getElementById('timer');
       const contentElement = document.getElementById('content');
 
@@ -55,7 +56,7 @@
           secondsLeft--;
         } else {
           clearInterval(timer);
-          contentElement.innerHTML = "<strong>Time's up!</strong> You can return after 1 hour.";
+          contentElement.innerHTML = "<strong>Time's up!</strong> Please return back to the survey page!";
           
           // Block future access for 1 hour
           const oneHourFromNow = new Date().getTime() + 60 * 60 * 1000;
