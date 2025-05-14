@@ -31,44 +31,51 @@
   <h1>Timed Section</h1>
   <div id="timer">02:00</div>
   <div id="content">
-    <p>This is your timed content. You have 2 minutes to read or interact with this section.</p>
+    <p>You have 2 minutes to read or interact with this section.</p>
   </div>
   <img src="arial.png" alt="Header Image" />
 
-
   <script>
-    // Check if user is blocked
+    const BLOCK_DURATION_MS = 60 * 60 * 1000; // 1 hour
+    const TIMER_DURATION_MS = 2 * 60 * 1000;  // 2 minutes
+
     const blockedUntil = localStorage.getItem('blockedUntil');
-    const now = new Date().getTime();
+    const now = Date.now();
 
     if (blockedUntil && now < parseInt(blockedUntil)) {
-      document.body.innerHTML = "<h2>Access denied</h2><p> Please return back to the survey page!</p>";
+      document.body.innerHTML = "<h2>Time's up!</h2><p> Please go back to the survey!.</p>";
     } else {
-      let secondsLeft = 120;
+      // Timer logic
       const timerElement = document.getElementById('timer');
       const contentElement = document.getElementById('content');
 
+      // Check if we already started the timer
+      let timerStart = localStorage.getItem('timerStart');
+
+      if (!timerStart) {
+        timerStart = Date.now();
+        localStorage.setItem('timerStart', timerStart);
+      }
+
       function updateTimer() {
-        const minutes = Math.floor(secondsLeft / 60);
-        const seconds = secondsLeft % 60;
-        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        if (secondsLeft > 0) {
-          secondsLeft--;
+        const elapsed = Date.now() - parseInt(timerStart);
+        const remaining = TIMER_DURATION_MS - elapsed;
+
+        if (remaining > 0) {
+          const secondsLeft = Math.floor(remaining / 1000);
+          const minutes = Math.floor(secondsLeft / 60);
+          const seconds = secondsLeft % 60;
+          timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         } else {
           clearInterval(timer);
-          contentElement.innerHTML = "<strong>Time's up!</strong> Please return back to the survey page!";
-          
-          // Block future access for 1 hour
-          const oneHourFromNow = new Date().getTime() + 5 * 1000;
-          localStorage.setItem('blockedUntil', oneHourFromNow.toString());
-          
-          // Optionally redirect or close
-          setTimeout(() => {
-            window.location.reload(); // Or redirect to another URL
-          }, 3000);
+          contentElement.innerHTML = "<h2>Time's up!</h2><p> Please go back to the survey!.</p>";
+          localStorage.setItem('blockedUntil', (Date.now() + BLOCK_DURATION_MS).toString());
+          localStorage.removeItem('timerStart');
+          setTimeout(() => window.location.reload(), 3000);
         }
       }
 
+      updateTimer(); // Call once immediately
       const timer = setInterval(updateTimer, 1000);
     }
   </script>
