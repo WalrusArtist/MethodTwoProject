@@ -43,7 +43,7 @@
     const now = Date.now();
 
     if (blockedUntil && now < parseInt(blockedUntil)) {
-      document.body.innerHTML = "<h2>Time's up!</h2><p> Please go back to the survey!.</p>";
+      document.body.innerHTML = "<h2>Time's up!</h2><p> Please go back to the survey!</p>";
     } else {
       // Timer logic
       const timerElement = document.getElementById('timer');
