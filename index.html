@@ -28,34 +28,48 @@
 </head>
 <body>
 
-  <h1>Corsiva</h1>
+  <h1>Timed Section</h1>
+  <img src="https://via.placeholder.com/600x200?text=Your+Image+Here" alt="Header Image" />
   <div id="timer">02:00</div>
   <div id="content">
     <p>This is your timed content. You have 2 minutes to read or interact with this section.</p>
   </div>
-  <h3>Text A</h3>
-  <img src="ARIAL_A.png" alt="Header Image" />
-  <h3>Text B</h3>
-  <img src="ARIAL_B.png" alt="Header2 Image" />
 
   <script>
-    let secondsLeft = 120;
-    const timerElement = document.getElementById('timer');
-    const contentElement = document.getElementById('content');
+    // Check if user is blocked
+    const blockedUntil = localStorage.getItem('blockedUntil');
+    const now = new Date().getTime();
 
-    function updateTimer() {
-      const minutes = Math.floor(secondsLeft / 60);
-      const seconds = secondsLeft % 60;
-      timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-      if (secondsLeft > 0) {
-        secondsLeft--;
-      } else {
-        clearInterval(timer);
-        contentElement.innerHTML = "<strong>Time's up!</strong> This section is now locked.";
+    if (blockedUntil && now < parseInt(blockedUntil)) {
+      document.body.innerHTML = "<h2>Access denied</h2><p>You must wait before accessing this page again.</p>";
+    } else {
+      let secondsLeft = 120;
+      const timerElement = document.getElementById('timer');
+      const contentElement = document.getElementById('content');
+
+      function updateTimer() {
+        const minutes = Math.floor(secondsLeft / 60);
+        const seconds = secondsLeft % 60;
+        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        if (secondsLeft > 0) {
+          secondsLeft--;
+        } else {
+          clearInterval(timer);
+          contentElement.innerHTML = "<strong>Time's up!</strong> You can return after 1 hour.";
+          
+          // Block future access for 1 hour
+          const oneHourFromNow = new Date().getTime() + 60 * 60 * 1000;
+          localStorage.setItem('blockedUntil', oneHourFromNow.toString());
+          
+          // Optionally redirect or close
+          setTimeout(() => {
+            window.location.reload(); // Or redirect to another URL
+          }, 3000);
+        }
       }
-    }
 
-    const timer = setInterval(updateTimer, 1000);
+      const timer = setInterval(updateTimer, 1000);
+    }
   </script>
 
 </body>
