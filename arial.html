@@ -36,7 +36,7 @@
   <img src="arial.png" alt="Header Image" />
 
   <script>
-    const BLOCK_DURATION_MS = 60 * 15 * 1000; // 1 hour
+    const BLOCK_DURATION_MS = 60 * 60 * 1000; // 1 hour
     const TIMER_DURATION_MS = 2 * 60 * 1000;  // 2 minutes
 
     const blockedUntil = localStorage.getItem('blockedUntil');
@@ -46,6 +46,7 @@
       document.body.innerHTML = "<h2>Time's up!</h2><p> Please go back to the survey!</p>";
     } else {
       // Timer logic
+      localStorage.removeItem('blockedUntil');
       const timerElement = document.getElementById('timer');
       const contentElement = document.getElementById('content');
 
