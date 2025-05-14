@@ -59,7 +59,7 @@
           contentElement.innerHTML = "<strong>Time's up!</strong> Please return back to the survey page!";
           
           // Block future access for 1 hour
-          const oneHourFromNow = new Date().getTime() + 60 * 60 * 1000;
+          const oneHourFromNow = new Date().getTime() + 5 * 1000;
           localStorage.setItem('blockedUntil', oneHourFromNow.toString());
           
           // Optionally redirect or close
