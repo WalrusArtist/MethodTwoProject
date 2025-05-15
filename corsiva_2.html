@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Timed Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      background-color: #f2f2f2;
+    }
+    #timer {
+      font-size: 2em;
+      margin: 20px;
+      color: #ff4444;
+    }
+    #content {
+      font-size: 1.2em;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Timed Section</h1>
+  <div id="timer">02:00</div>
+  <div id="content">
+    <p>You have 2 minutes to read or interact with this section.</p>
+  </div>
+  <img src="corsiva_2.png" alt="Header Image" />
+
+  <script>
+    const BLOCK_DURATION_MS = 60 * 60 * 1000; // 1 hour
+    const TIMER_DURATION_MS = 2 * 60 * 1000;  // 2 minutes
+
+    const blockedUntil = localStorage.getItem('blockedUntil');
+    const now = Date.now();
+
+    if (blockedUntil && now < parseInt(blockedUntil)) {
+      document.body.innerHTML = "<h2>Times up!</h2><p>Please return back to the survey!</p>";
+    } else {
+      // Timer logic
+      const timerElement = document.getElementById('timer');
+      const contentElement = document.getElementById('content');
+
+      // Check if we already started the timer
+      timerStart = parseInt(localStorage.getItem('timerStart'), 10);
+      if (!timerStart || (Date.now() - timerStart) < 0) {
+        timerStart = Date.now();
+        localStorage.setItem('timerStart', timerStart.toString());
+      }
+
+      function updateTimer() {
+        const elapsed = Date.now() - parseInt(timerStart);
+        const remaining = TIMER_DURATION_MS - elapsed;
+
+        if (remaining > 0) {
+          const secondsLeft = Math.floor(remaining / 1000);
+          const minutes = Math.floor(secondsLeft / 60);
+          const seconds = secondsLeft % 60;
+          timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        } else {
+          clearInterval(timer);
+          contentElement.innerHTML = "<h2>Times up!</h2><p>Please return back to the survey!</p>";
+          localStorage.setItem('blockedUntil', (Date.now() + BLOCK_DURATION_MS).toString());
+          localStorage.removeItem('timerStart', timerStart);
+          setTimeout(() => window.location.reload(), 3000);
+        }
+      }
+
+      updateTimer(); // Call once immediately
+      const timer = setInterval(updateTimer, 1000);
+    }
+  </script>
+
+</body>
+</html>
